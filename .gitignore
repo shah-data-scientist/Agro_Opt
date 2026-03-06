@@ -33,6 +33,7 @@ poetry.lock        # commit this if you want reproducible installs
 /models/
 !/models/.gitkeep
 !/models/fao_refs.json
+!/models/feature_names.json
 
 # Logs
 logs/
