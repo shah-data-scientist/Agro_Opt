@@ -200,6 +200,56 @@ def plot_feature_importance(
 
 
 # ---------------------------------------------------------------------------
+# Ridge coefficient importance (linear model equivalent)
+# ---------------------------------------------------------------------------
+
+def plot_ridge_coefficients(
+    pipeline: Pipeline,
+    feature_cols: list[str],
+    model_name: str,
+    top_n: int = 20,
+    ax: plt.Axes | None = None,
+) -> plt.Axes:
+    """
+    Horizontal bar chart of Ridge coefficient magnitudes.
+
+    After StandardScaler normalisation all features share the same scale,
+    so |coef| is a valid proxy for feature importance in a linear model.
+    Bars are coloured by sign: green = positive effect, red = negative.
+
+    Raises ValueError if the pipeline's last step has no ``coef_`` attribute.
+    """
+    if ax is None:
+        _, ax = plt.subplots(figsize=(8, 8))
+
+    estimator = pipeline.steps[-1][1]
+    if not hasattr(estimator, "coef_"):
+        raise ValueError(
+            f"Model '{model_name}' does not expose coef_. "
+            "Use a linear model (Ridge, Lasso, ElasticNet)."
+        )
+
+    coefs = pd.Series(estimator.coef_, index=feature_cols)
+    top = coefs.abs().sort_values(ascending=False).head(top_n)
+    top_coefs = coefs[top.index]
+
+    colors = ["#27ae60" if v > 0 else "#e74c3c" for v in top_coefs.values]
+    top_coefs.plot(kind="barh", ax=ax, color=colors, edgecolor="white")
+    ax.axvline(0, color="black", lw=0.8, ls="--")
+    ax.set_xlabel("Ridge Coefficient (standardised scale)")
+    ax.set_title(
+        f"{model_name} — Top {top_n} Feature Coefficients\n"
+        "Green = positive effect on yield, Red = negative",
+        fontweight="bold",
+    )
+    for i, (_name, val) in enumerate(top_coefs.items()):
+        x = val + np.sign(val) * top_coefs.abs().max() * 0.01
+        ax.text(x, i, f"{val:+.1f}", va="center", fontsize=8,
+                ha="left" if val >= 0 else "right")
+    return ax
+
+
+# ---------------------------------------------------------------------------
 # Model comparison table
 # ---------------------------------------------------------------------------
 
