@@ -162,6 +162,7 @@ rainfall_mm = st.sidebar.slider(
     max_value=5000,
     value=650,
     step=10,
+    key="rainfall_mm",
     help="Total seasonal rainfall in millimetres. Schema range: 0–5 000. "
          "Example: 650 mm (typical US Midwest maize season).",
 )
@@ -172,6 +173,7 @@ temperature_celsius = st.sidebar.slider(
     max_value=50,
     value=22,
     step=1,
+    key="temperature_celsius",
     help="Mean growing-season temperature. Schema range: −10 to 50 °C. "
          "Example: 22 °C (warm temperate climate).",
 )
@@ -182,6 +184,7 @@ days_to_harvest = st.sidebar.slider(
     max_value=365,
     value=120,
     step=1,
+    key="days_to_harvest",
     help="Length of the growing season in days. Schema range: 1–365. "
          "Examples: Maize ~120 d, Rice ~130 d, Wheat ~240 d, Soybean ~100 d.",
 )
@@ -191,6 +194,7 @@ region = st.sidebar.selectbox(
     "Region",
     options=REGIONS,
     index=REGIONS.index("East"),
+    key="region",
     help="Geographic region. Allowed values: East, North, South, West.",
 )
 
@@ -198,6 +202,7 @@ soil_type = st.sidebar.selectbox(
     "Soil Type",
     options=SOIL_TYPES,
     index=SOIL_TYPES.index("Loam"),
+    key="soil_type",
     help="Soil classification. Options: Chalky, Clay, Loam, Peaty, Sandy, Silt. "
          "Loam is generally the most productive.",
 )
@@ -206,16 +211,17 @@ weather_condition = st.sidebar.selectbox(
     "Weather Condition",
     options=WEATHER_CONDITIONS,
     index=WEATHER_CONDITIONS.index("Sunny"),
+    key="weather_condition",
     help="Dominant weather pattern. Options: Cloudy, Rainy, Sunny.",
 )
 
 # --- Boolean inputs ---
 st.sidebar.markdown("**Management**")
 col_fert, col_irr = st.sidebar.columns(2)
-fertilizer_used = col_fert.checkbox("Fertilizer", value=True)
-irrigation_used = col_irr.checkbox("Irrigation", value=True)
+fertilizer_used = col_fert.checkbox("Fertilizer", value=True, key="fertilizer_used")
+irrigation_used = col_irr.checkbox("Irrigation", value=True, key="irrigation_used")
 
-# Convenience dict shared across tabs
+# Convenience dict shared across tabs — widget keys sync to session_state automatically
 conditions_payload = _build_conditions_payload(
     rainfall_mm=float(rainfall_mm),
     temperature_celsius=float(temperature_celsius),
@@ -264,14 +270,6 @@ for preset_name, preset_vals in PRESETS.items():
         for k, v in preset_vals.items():
             st.session_state[k] = v
         st.rerun()
-
-# Apply session state preset values to conditions (if preset was clicked)
-for key in ["rainfall_mm", "temperature_celsius", "days_to_harvest"]:
-    if key in st.session_state:
-        conditions_payload[key] = st.session_state[key]
-for key in ["region", "soil_type", "weather_condition", "fertilizer_used", "irrigation_used"]:
-    if key in st.session_state:
-        conditions_payload[key] = st.session_state[key]
 
 # ---------------------------------------------------------------------------
 # Main area
