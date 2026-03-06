@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Poetry
+poetry.lock        # commit this if you want reproducible installs
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data — large CSV files excluded (use DVC or manual download)
+# Raw datasets are too large for git (378 MB); track via DVC or README instructions
+/Data/
+/data/
+
+# Models (trained artefacts — root level only, not src/models/ source code)
+/models/
+!/models/.gitkeep
+
+# Logs
+logs/
+*.log
+
+# MLflow
+mlflow/mlruns/
+mlflow/mlartifacts/
+
+# Environment
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/settings.json
+.idea/
+*.swp
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/

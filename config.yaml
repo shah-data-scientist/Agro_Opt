@@ -1,0 +1,113 @@
+# =============================================================================
+# AgroOpt — Central Configuration
+# =============================================================================
+
+project:
+  name: "agro-opt"
+  version: "0.1.0"
+  random_seed: 42
+
+# -----------------------------------------------------------------------------
+# Paths
+# -----------------------------------------------------------------------------
+paths:
+  data:
+    raw_dir: "data/raw"
+    processed_dir: "data/processed"
+    external_dir: "data/external"
+    # Source dataset files (copied to raw/)
+    dataset_1: "data/raw/crop_yield.csv"
+    dataset_2_yield: "data/raw/yield.csv"
+    dataset_2_pesticides: "data/raw/pesticides.csv"
+    dataset_2_rainfall: "data/raw/rainfall.csv"
+    dataset_2_temp: "data/raw/temp.csv"
+    merged: "data/processed/merged_dataset.csv"
+    features: "data/processed/features_dataset.csv"
+  models:
+    dir: "models/"
+    best_model: "models/best_model.pkl"
+    feature_names: "models/feature_names.json"
+    scaler: "models/scaler.pkl"
+    label_encoder: "models/label_encoder.pkl"
+  mlflow:
+    tracking_uri: "mlflow/mlruns"
+    experiment_name: "agro-opt-yield-prediction"
+
+# -----------------------------------------------------------------------------
+# Data
+# -----------------------------------------------------------------------------
+data:
+  target_column: "yield_hg_ha"
+  crop_column: "crop"
+  year_column: "year"
+  # Columns to drop if fully empty after merge
+  drop_threshold: 0.8   # drop column if >80% missing
+
+# -----------------------------------------------------------------------------
+# Feature Engineering
+# -----------------------------------------------------------------------------
+features:
+  categorical_columns:
+    - "crop"
+    - "country"
+  numeric_columns:
+    - "year"
+    - "avg_temp"
+    - "rainfall_mm"
+    - "pesticides_tonnes"
+  # Derived features
+  create_ratios: true
+  create_climate_index: true
+
+# -----------------------------------------------------------------------------
+# Model Training
+# -----------------------------------------------------------------------------
+training:
+  test_size: 0.2
+  val_size: 0.1
+  cv_folds: 5
+  models:
+    linear_regression: {}
+    random_forest:
+      n_estimators: 200
+      max_depth: 10
+      min_samples_split: 5
+      random_state: 42
+      n_jobs: -1
+    gradient_boosting:
+      n_estimators: 200
+      learning_rate: 0.05
+      max_depth: 5
+      random_state: 42
+    xgboost:
+      n_estimators: 300
+      learning_rate: 0.05
+      max_depth: 6
+      subsample: 0.8
+      colsample_bytree: 0.8
+      random_state: 42
+      n_jobs: -1
+    lightgbm:
+      n_estimators: 300
+      learning_rate: 0.05
+      num_leaves: 31
+      random_state: 42
+      n_jobs: -1
+      verbose: -1
+
+# -----------------------------------------------------------------------------
+# API
+# -----------------------------------------------------------------------------
+api:
+  host: "0.0.0.0"
+  port: 8000
+  reload: false
+  log_level: "info"
+
+# -----------------------------------------------------------------------------
+# Streamlit
+# -----------------------------------------------------------------------------
+streamlit:
+  api_base_url: "http://localhost:8000"
+  page_title: "AgroOpt — Crop Yield & Recommendation"
+  page_icon: "🌾"
