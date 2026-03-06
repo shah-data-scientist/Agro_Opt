@@ -193,7 +193,7 @@ def plot_feature_importance(
     ax.set_xlabel("Feature Importance (Impurity / Gain)")
     ax.set_title(f"{model_name} — Top {top_n} Feature Importances", fontweight="bold")
 
-    for i, (name, val) in enumerate(importances.items()):
+    for i, (_name, val) in enumerate(importances.items()):
         ax.text(val + importances.max() * 0.005, i, f"{val:.4f}",
                 va="center", fontsize=8)
     return ax

@@ -34,8 +34,7 @@ Inputs (FarmConditions)
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
-from pathlib import Path
+from dataclasses import dataclass
 from typing import Literal
 
 import numpy as np

@@ -224,7 +224,7 @@ if __name__ == "__main__":
     print("=" * 65)
     print(f"Shape      : {df.shape}")
     print(f"Columns    : {list(df.columns)}")
-    print(f"Target     : yield_hg_ha  (hg/ha)")
+    print("Target     : yield_hg_ha  (hg/ha)")
     print()
     print("Null counts per column:")
     nulls = df.isnull().sum()
