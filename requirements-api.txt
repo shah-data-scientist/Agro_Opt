@@ -1,0 +1,24 @@
+# AgroOpt API — runtime dependencies only
+# Install: pip install -r requirements-api.txt
+
+# Data science
+pandas>=2.2.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+scipy>=1.12.0
+
+# ML models (keep in sync with training; required to unpickle saved models)
+xgboost>=2.0.0
+lightgbm>=4.3.0
+
+# API framework
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+
+# Utilities
+joblib>=1.3.0
+pyyaml>=6.0.1
+loguru>=0.7.0
+python-dotenv>=1.0.0

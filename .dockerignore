@@ -1,0 +1,60 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Eggs / packaging
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+notebooks/
+.ipynb_checkpoints/
+
+# Large datasets (not needed at runtime)
+data/
+Data/
+
+# MLflow artefacts
+mlflow/
+
+# Logs
+logs/
+*.log
+
+# Development files
+.git/
+.gitignore
+.pre-commit-config.yaml
+.flake8
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+tests/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files (never bake secrets into images)
+.env
+.env.*
+
+# Python version file (handled by FROM python:3.11-slim)
+.python-version

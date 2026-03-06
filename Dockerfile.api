@@ -1,0 +1,42 @@
+# =============================================================================
+# AgroOpt — FastAPI backend
+# =============================================================================
+# Build:  docker build -f Dockerfile.api -t agro-opt-api .
+# Run:    docker run -p 8000:8000 -v $(pwd)/models:/app/models:ro agro-opt-api
+# =============================================================================
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# System dependencies
+# - build-essential: compile C extensions (scipy, etc.)
+# - libgomp1: OpenMP required by LightGBM & XGBoost on Linux
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies (install before copying source for better layer caching)
+COPY requirements-api.txt .
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements-api.txt
+
+# Application source
+COPY src/ src/
+COPY config.yaml .
+
+# Model artefacts — baked into the image for standalone use.
+# docker-compose.yml mounts ./models as a volume to keep the image
+# model-agnostic; that volume mount takes precedence over this COPY.
+COPY models/ models/
+
+EXPOSE 8000
+
+# Run as non-root for security
+RUN useradd --no-create-home --no-log-init appuser \
+    && chown -R appuser:appuser /app
+USER appuser
+
+CMD ["uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8000"]

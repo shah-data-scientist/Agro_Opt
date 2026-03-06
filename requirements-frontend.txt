@@ -1,0 +1,12 @@
+# AgroOpt Frontend — runtime dependencies only
+# Install: pip install -r requirements-frontend.txt
+
+# UI framework
+streamlit>=1.32.0
+plotly>=5.20.0
+
+# HTTP client (calls the FastAPI backend)
+requests>=2.31.0
+
+# Utilities
+loguru>=0.7.0

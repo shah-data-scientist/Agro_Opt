@@ -1,0 +1,33 @@
+# =============================================================================
+# AgroOpt — Streamlit frontend
+# =============================================================================
+# Build:  docker build -f Dockerfile.frontend -t agro-opt-frontend .
+# Run:    docker run -p 8501:8501 -e API_BASE_URL=http://localhost:8000 agro-opt-frontend
+# =============================================================================
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Python dependencies
+COPY requirements-frontend.txt .
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements-frontend.txt
+
+# Only the frontend module is needed; no ML libraries, no models
+COPY src/frontend/ src/frontend/
+
+EXPOSE 8501
+
+# Default API location (overridden by docker-compose via environment:)
+ENV API_BASE_URL=http://api:8000
+
+# Run as non-root for security
+RUN useradd --no-create-home --no-log-init appuser \
+    && chown -R appuser:appuser /app
+USER appuser
+
+CMD ["streamlit", "run", "src/frontend/app.py", \
+     "--server.port=8501", \
+     "--server.address=0.0.0.0", \
+     "--server.headless=true"]

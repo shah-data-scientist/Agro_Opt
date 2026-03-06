@@ -18,6 +18,7 @@ Optimize   — grid-search management inputs for a target crop
 
 from __future__ import annotations
 
+import os
 import requests
 import streamlit as st
 import plotly.graph_objects as go
@@ -136,7 +137,7 @@ st.sidebar.caption("Crop Yield Intelligence")
 
 # API URL
 if "api_base_url" not in st.session_state:
-    st.session_state["api_base_url"] = "http://localhost:8000"
+    st.session_state["api_base_url"] = os.environ.get("API_BASE_URL", "http://localhost:8000")
 
 st.sidebar.text_input(
     "API base URL",
