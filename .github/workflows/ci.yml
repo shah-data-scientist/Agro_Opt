@@ -63,10 +63,11 @@ jobs:
 
       - name: Run tests
         run: |
+          # || prevents bash -e from exiting before we can inspect the code
+          PYTEST_EXIT=0
           pytest tests/ -v --tb=short \
             --cov=src --cov-report=xml --cov-report=term-missing \
-            --no-header
-          PYTEST_EXIT=$?
+            --no-header || PYTEST_EXIT=$?
           # Exit code 5 = no tests collected (acceptable until Phase 11)
           if [ $PYTEST_EXIT -eq 5 ]; then
             echo "No tests collected — Phase 11 will add the test suite."
