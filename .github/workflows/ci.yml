@@ -1,0 +1,112 @@
+# =============================================================================
+# AgroOpt — Continuous Integration
+# =============================================================================
+# Runs on every push to main and on all pull requests targeting main.
+#
+# Jobs
+# ----
+# lint         flake8 code quality check
+# test         pytest with coverage (exit 5 = no tests collected → pass)
+# docker-build build both Docker images to validate Dockerfiles
+# =============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # Lint — flake8
+  # ---------------------------------------------------------------------------
+  lint:
+    name: Lint (flake8)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install linting tools
+        run: pip install flake8 flake8-bugbear
+
+      - name: Run flake8
+        run: flake8 src/ tests/
+
+  # ---------------------------------------------------------------------------
+  # Test — pytest + coverage
+  # ---------------------------------------------------------------------------
+  test:
+    name: Test (pytest)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-api.txt
+          pip install pytest pytest-cov pytest-asyncio httpx
+
+      - name: Run tests
+        run: |
+          pytest tests/ -v --tb=short \
+            --cov=src --cov-report=xml --cov-report=term-missing \
+            --no-header
+          PYTEST_EXIT=$?
+          # Exit code 5 = no tests collected (acceptable until Phase 11)
+          if [ $PYTEST_EXIT -eq 5 ]; then
+            echo "No tests collected — Phase 11 will add the test suite."
+            exit 0
+          fi
+          exit $PYTEST_EXIT
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # Docker build — validate both Dockerfiles
+  # ---------------------------------------------------------------------------
+  docker-build:
+    name: Docker build check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.api
+          push: false
+          tags: agro-opt-api:ci
+
+      - name: Build frontend image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.frontend
+          push: false
+          tags: agro-opt-frontend:ci
