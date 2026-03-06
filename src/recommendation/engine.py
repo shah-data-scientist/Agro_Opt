@@ -170,11 +170,11 @@ def load_assets() -> dict:
 
 def _load_fao_refs() -> dict:
     """
-    Extract per-crop FAO 2013 USA reference values from the merged dataset.
+    Load per-crop FAO 2013 USA reference values.
 
-    These are constants in the training data (one value per crop for
-    fao_yield_hg_ha, and a single national value for fao_rainfall_mm and
-    fao_avg_temp shared across all crops).
+    Tries ``models/fao_refs.json`` first (lightweight; suitable for Docker
+    where ``data/`` is not present).  Falls back to reading the full merged
+    dataset CSV when the JSON does not exist (development / notebook use).
 
     Returns
     -------
@@ -183,18 +183,26 @@ def _load_fao_refs() -> dict:
       - ``fao_rainfall_mm`` : float  (USA national average, 2013)
       - ``fao_avg_temp``    : float  (USA national average, 2013)
     """
-    merged_path = settings.paths.merged
-    # Read only the FAO columns — avoids loading the full 666 K-row file
-    cols = ["crop", "fao_yield_hg_ha", "fao_rainfall_mm", "fao_avg_temp"]
-    df = pd.read_csv(merged_path, usecols=cols)
-
-    fao_yield = (
-        df.groupby("crop")["fao_yield_hg_ha"]
-        .first()
-        .to_dict()
-    )
-    fao_rainfall_mm: float = float(df["fao_rainfall_mm"].iloc[0])
-    fao_avg_temp: float = float(df["fao_avg_temp"].iloc[0])
+    json_path = settings.paths.models_dir / "fao_refs.json"
+    if json_path.exists():
+        logger.info(f"Loading FAO refs from {json_path}")
+        with json_path.open() as f:
+            refs = json.load(f)
+        fao_yield: dict = refs["fao_yield_hg_ha"]
+        fao_rainfall_mm: float = float(refs["fao_rainfall_mm"])
+        fao_avg_temp: float = float(refs["fao_avg_temp"])
+    else:
+        merged_path = settings.paths.merged
+        # Read only the FAO columns — avoids loading the full 666 K-row file
+        cols = ["crop", "fao_yield_hg_ha", "fao_rainfall_mm", "fao_avg_temp"]
+        df = pd.read_csv(merged_path, usecols=cols)
+        fao_yield = (
+            df.groupby("crop")["fao_yield_hg_ha"]
+            .first()
+            .to_dict()
+        )
+        fao_rainfall_mm = float(df["fao_rainfall_mm"].iloc[0])
+        fao_avg_temp = float(df["fao_avg_temp"].iloc[0])
 
     logger.info(
         f"FAO 2013 USA refs — rainfall: {fao_rainfall_mm:.1f} mm, "

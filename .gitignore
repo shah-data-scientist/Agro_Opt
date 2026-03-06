@@ -32,6 +32,7 @@ poetry.lock        # commit this if you want reproducible installs
 # Models (trained artefacts — root level only, not src/models/ source code)
 /models/
 !/models/.gitkeep
+!/models/fao_refs.json
 
 # Logs
 logs/

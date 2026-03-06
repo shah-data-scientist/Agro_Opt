@@ -1,0 +1,10 @@
+{
+  "fao_yield_hg_ha": {
+    "Maize": 99256,
+    "Rice": 86232,
+    "Soybean": 29615,
+    "Wheat": 31673
+  },
+  "fao_rainfall_mm": 715.0,
+  "fao_avg_temp": 16.44
+}

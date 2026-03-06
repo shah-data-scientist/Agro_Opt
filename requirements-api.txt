@@ -7,10 +7,6 @@ numpy>=1.26.0
 scikit-learn>=1.4.0
 scipy>=1.12.0
 
-# ML models (keep in sync with training; required to unpickle saved models)
-xgboost>=2.0.0
-lightgbm>=4.3.0
-
 # API framework
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0
