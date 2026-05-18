@@ -60,3 +60,6 @@ Thumbs.db
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Archives — offline reference files, not part of active development
+Archives/

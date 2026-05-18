@@ -50,20 +50,19 @@ poetry shell
 ### Run the full pipeline
 
 ```bash
-# 1. Merge raw datasets
+# Run end-to-end (merge → features → train)
+poetry run python scripts/run_pipeline.py
+
+# Or run individual stages:
 poetry run python -m src.data.merge_datasets
-
-# 2. Feature engineering
 poetry run python -m src.features.feature_engineering
+poetry run python -m src.models.train
 
-# 3. Train models (logged in MLflow)
-poetry run python -m src.models.train_model
-
-# 4. Start the API
+# Start the API
 poetry run uvicorn src.api.main:app --reload --port 8000
 
-# 5. Start Streamlit (new terminal)
-poetry run streamlit run app/streamlit_app.py
+# Start Streamlit (new terminal)
+poetry run streamlit run src/frontend/app.py
 ```
 
 ### Docker
@@ -85,54 +84,59 @@ poetry run mlflow ui --backend-store-uri mlflow/mlruns
 
 ```
 agro-opt/
-├── config.yaml                   # Central configuration
+├── config.yaml                   # Central configuration (all pipeline settings)
 ├── pyproject.toml                # Poetry dependencies
-├── requirements.txt              # pip-compatible deps
+├── docker-compose.yml            # Local dev/demo orchestration
+├── Dockerfile.api                # FastAPI container
+├── Dockerfile.frontend           # Streamlit container
 │
-├── data/
-│   ├── raw/                      # Original datasets (tracked by git)
-│   └── processed/                # Generated artefacts (git-ignored)
+├── scripts/
+│   └── run_pipeline.py           # End-to-end MLOps orchestration
+│
+├── src/
+│   ├── api/
+│   │   ├── app.py                # FastAPI routes (/health, /predict, /recommend, /optimize)
+│   │   ├── main.py               # Uvicorn entrypoint
+│   │   └── schemas.py            # Pydantic request/response models
+│   ├── data/
+│   │   ├── load_data.py          # Typed loaders for all raw datasets
+│   │   ├── merge_datasets.py     # FAO + synthetic data integration
+│   │   └── preprocess.py        # Cleaning & validation
+│   ├── features/
+│   │   ├── feature_engineering.py  # 36-feature derivation
+│   │   └── pca_analysis.py      # Dimensionality reduction
+│   ├── frontend/
+│   │   └── app.py               # Streamlit UI (3 tabs: Predict / Recommend / Optimize)
+│   ├── models/
+│   │   ├── train.py             # 5-model training with MLflow logging
+│   │   └── evaluate.py          # Metrics & plots
+│   ├── recommendation/
+│   │   └── engine.py            # Yield prediction + grid-search optimisation
+│   └── utils/
+│       ├── config.py             # Settings singleton (config.yaml → Pydantic)
+│       └── logging.py           # Loguru setup
 │
 ├── notebooks/
 │   ├── 01_eda.ipynb              # Exploratory Data Analysis
 │   ├── 02_feature_engineering.ipynb
-│   └── 03_model_experiments.ipynb
-│
-├── src/
-│   ├── data/
-│   │   ├── load_data.py          # Dataset loaders
-│   │   ├── merge_datasets.py     # Dataset integration
-│   │   └── preprocess.py        # Cleaning & imputation
-│   ├── features/
-│   │   └── feature_engineering.py
-│   ├── models/
-│   │   ├── train_model.py        # MLflow-tracked training
-│   │   ├── predict.py            # Inference helpers
-│   │   └── recommend.py         # Simulation-based recommender
-│   ├── evaluation/
-│   │   └── evaluate_model.py
-│   ├── api/
-│   │   ├── main.py               # FastAPI application
-│   │   ├── routes.py             # Endpoints
-│   │   └── schemas.py           # Pydantic request/response models
-│   └── utils/
-│       ├── config.py             # Settings singleton
-│       └── logging.py           # Loguru setup
-│
-├── app/
-│   └── streamlit_app.py
+│   ├── 03_pca_analysis.ipynb
+│   ├── 04_model_training.ipynb
+│   └── 05_recommendation_engine.ipynb
 │
 ├── tests/
-│   ├── test_data.py
-│   ├── test_model.py
-│   └── test_api.py
+│   ├── conftest.py               # pytest fixtures
+│   ├── test_api.py
+│   ├── test_engine.py
+│   └── test_schemas.py
 │
-├── docker/
-│   ├── Dockerfile.api
-│   └── Dockerfile.streamlit
+├── Data/
+│   ├── raw/                      # Source CSVs (crop_yield, yield, rainfall, temp, pesticides)
+│   └── processed/                # Merged & feature datasets (git-ignored)
 │
-├── .github/workflows/ci_cd.yml
-└── mlflow/
+├── models/                       # Trained artefacts (best_model.pkl, feature_names.json)
+├── reports/figures/              # All output plots (EDA, features, PCA, model evaluation)
+├── deliverables/                 # Business report, schema diagram, presentation script
+└── .github/workflows/            # CI (lint + test + build) and Docker publish
 ```
 
 ---
