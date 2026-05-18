@@ -1,5 +1,5 @@
 """
-Preprocessing transformations for AgroOpt.
+Preprocessing transformations for CropWise.
 
 All functions are pure (no side-effects) and return a new DataFrame.
 Every decision that removes or modifies data is logged.

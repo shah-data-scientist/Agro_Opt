@@ -18,7 +18,10 @@ from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
-from pptx.util import Inches, Pt
+from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
+from pptx.enum.text import MSO_AUTO_SIZE
+from pptx.oxml.ns import qn
+from lxml import etree
 
 # ---------------------------------------------------------------------------
 # Brand palette
@@ -55,10 +58,18 @@ def set_bg(slide, r, g, b):
     fill.fore_color.rgb = RGBColor(r, g, b)
 
 def add_rect(slide, left, top, width, height, r, g, b, alpha_pct=None):
-    shape = slide.shapes.add_shape(1, left, top, width, height)
+    shape = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, left, top, width, height)
     shape.fill.solid()
     shape.fill.fore_color.rgb = RGBColor(r, g, b)
+    # Explicit no-border: generates <a:ln><a:noFill/></a:ln> — valid OOXML
     shape.line.fill.background()
+    # Fix bodyPr on the shape's txBody: add wrap + noAutofit to suppress repair dialog
+    txBody = shape.text_frame._txBody
+    bodyPr = txBody.find(qn('a:bodyPr'))
+    if bodyPr is not None:
+        bodyPr.set('wrap', 'sq')
+        if bodyPr.find(qn('a:noAutofit')) is None:
+            bodyPr.append(etree.Element(qn('a:noAutofit')))
     return shape
 
 def add_text(slide, text, left, top, width, height,
@@ -67,6 +78,7 @@ def add_text(slide, text, left, top, width, height,
     txBox = slide.shapes.add_textbox(left, top, width, height)
     tf = txBox.text_frame
     tf.word_wrap = wrap
+    tf.auto_size = MSO_AUTO_SIZE.NONE
     p = tf.paragraphs[0]
     p.alignment = align
     run = p.add_run()
@@ -201,7 +213,7 @@ def make_pipeline_diagram():
 
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 2.2)
-    ax.set_title("AgroOpt — End-to-End MLOps Pipeline",
+    ax.set_title("CropWise — End-to-End MLOps Pipeline",
                  fontsize=11, color="white", fontweight="bold", pad=6)
     fig.tight_layout(pad=0.3)
     return fig
@@ -421,7 +433,7 @@ def slide_title(prs):
     slide.shapes.add_picture(buf2, Inches(9.3), Inches(0.4), Inches(1.5), Inches(1.5))
 
     # Title text
-    add_text(slide, "AgroOpt",
+    add_text(slide, "CropWise",
              Inches(0.5), Inches(1.5), Inches(8.0), Inches(1.4),
              font_size=58, bold=True, color=WHITE, align=PP_ALIGN.LEFT)
 
@@ -444,6 +456,12 @@ def slide_title(prs):
              Inches(0.5), Inches(5.05), Inches(7.8), Inches(0.35),
              font_size=11, bold=False, color=GREEN_LIGHT, align=PP_ALIGN.LEFT)
 
+    add_rect(slide, Inches(0.5), Inches(5.6), Inches(5.0), Inches(0.04), 0xF9, 0xA8, 0x25)
+
+    add_text(slide, "github.com/shah-data-scientist/crop-wise",
+             Inches(0.5), Inches(5.75), Inches(7.8), Inches(0.4),
+             font_size=11, bold=False, color=GREEN_LIGHT, align=PP_ALIGN.LEFT, italic=True)
+
 
 def slide_agenda(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
@@ -456,7 +474,7 @@ def slide_agenda(prs):
 
     items = [
         ("01", "Business Problem & Opportunity"),
-        ("02", "Our Solution — AgroOpt Platform"),
+        ("02", "Our Solution — CropWise Platform"),
         ("03", "Data & Methodology"),
         ("04", "Feature Engineering"),
         ("05", "Model Training & Results"),
@@ -535,7 +553,7 @@ def slide_solution(prs):
     set_bg(slide, 0x1B, 0x5E, 0x20)
     add_rect(slide, 0, 0, SLIDE_W, Inches(1.1), 0x15, 0x4A, 0x18)
     add_rect(slide, 0, Inches(1.1), SLIDE_W, Inches(0.05), 0xF9, 0xA8, 0x25)
-    add_text(slide, "The AgroOpt Solution", Inches(0.5), Inches(0.2),
+    add_text(slide, "The CropWise Solution", Inches(0.5), Inches(0.2),
              Inches(12), Inches(0.7), font_size=30, bold=True, color=WHITE)
 
     fig = make_pipeline_diagram()
@@ -786,12 +804,12 @@ def slide_business_value(prs):
         col = i % cols
         row = i // cols
         lft = Inches(0.35 + col * col_w)
-        top = Inches(3.75 + row * 1.05)
-        add_rect(slide, lft, top, Inches(0.08), Inches(0.75), 0xF9, 0xA8, 0x25)
+        top = Inches(3.65 + row * 1.25)
+        add_rect(slide, lft, top, Inches(0.08), Inches(0.9), 0xF9, 0xA8, 0x25)
         add_text(slide, title, lft + Inches(0.18), top,
                  Inches(5.8), Inches(0.35), font_size=11, bold=True, color=GOLD)
         add_text(slide, body, lft + Inches(0.18), top + Inches(0.35),
-                 Inches(5.8), Inches(0.45), font_size=9.5, bold=False, color=CREAM)
+                 Inches(5.8), Inches(0.65), font_size=9.5, bold=False, color=CREAM)
 
 
 def slide_recommendations(prs):
@@ -821,21 +839,21 @@ def slide_recommendations(prs):
     ]
     for i, (horizon, color, items) in enumerate(horizons):
         lft = Inches(0.4 + i * 4.3)
-        add_rect(slide, lft, Inches(1.3), Inches(4.1), Inches(5.5),
+        add_rect(slide, lft, Inches(1.25), Inches(4.1), Inches(6.0),
                  *[int(color.lstrip("#")[j:j+2], 16) for j in (0, 2, 4)])
-        add_rect(slide, lft, Inches(1.3), Inches(4.1), Inches(0.12),
+        add_rect(slide, lft, Inches(1.25), Inches(4.1), Inches(0.12),
                  0xF9, 0xA8, 0x25)
-        add_text(slide, horizon, lft + Inches(0.15), Inches(1.5),
-                 Inches(3.8), Inches(0.45), font_size=15, bold=True, color=GOLD)
+        add_text(slide, horizon, lft + Inches(0.15), Inches(1.42),
+                 Inches(3.8), Inches(0.5), font_size=16, bold=True, color=GOLD)
         for j, item in enumerate(items):
-            top = Inches(2.15 + j * 1.45)
-            add_rect(slide, lft + Inches(0.15), top, Inches(0.35), Inches(0.35),
-                     0xF9, 0xA8, 0x25)
-            add_text(slide, str(j + 1), lft + Inches(0.15), top,
-                     Inches(0.35), Inches(0.35), font_size=10, bold=True,
+            top = Inches(2.1 + j * 1.65)
+            add_rect(slide, lft + Inches(0.15), top + Inches(0.05),
+                     Inches(0.36), Inches(0.36), 0xF9, 0xA8, 0x25)
+            add_text(slide, str(j + 1), lft + Inches(0.15), top + Inches(0.05),
+                     Inches(0.36), Inches(0.36), font_size=11, bold=True,
                      color=DARK_TEXT, align=PP_ALIGN.CENTER)
             add_text(slide, item, lft + Inches(0.6), top,
-                     Inches(3.3), Inches(0.8), font_size=10.5,
+                     Inches(3.3), Inches(1.3), font_size=11,
                      bold=False, color=CREAM)
 
 
@@ -893,7 +911,7 @@ def slide_closing(prs):
              Inches(9.0), Inches(1.2), font_size=52, bold=True,
              color=WHITE, align=PP_ALIGN.LEFT)
 
-    add_text(slide, "AgroOpt — Smarter Decisions, Better Harvests",
+    add_text(slide, "CropWise — Smarter Decisions, Better Harvests",
              Inches(3.8), Inches(2.35), Inches(9.0), Inches(0.6),
              font_size=18, bold=False, color=GOLD, align=PP_ALIGN.LEFT, italic=True)
 
@@ -909,7 +927,7 @@ def slide_closing(prs):
 
     # GitHub repo note
     add_text(slide,
-             "github.com/shah-data-scientist/Agro_Opt",
+             "github.com/shah-data-scientist/crop-wise",
              Inches(3.8), Inches(6.3), Inches(8.0), Inches(0.45),
              font_size=11, bold=False, color=GREEN_LIGHT,
              align=PP_ALIGN.LEFT, italic=True)
@@ -919,28 +937,79 @@ def slide_closing(prs):
 # Main
 # ---------------------------------------------------------------------------
 
+def fix_pptx_paragraphs(path):
+    """Post-process: add <a:endParaRPr> to every <a:p> that lacks one.
+
+    python-pptx omits this element in slides, slide layouts, and slide masters,
+    which triggers PowerPoint's repair dialog. Uses string-level replacement to
+    preserve original namespace prefixes exactly.
+    """
+    import zipfile, re, shutil, os
+
+    _NEEDS_FIX = re.compile(
+        r"ppt/(?:slides/slide|slideLayouts/slideLayout|slideMasters/slideMaster)\d+\.xml"
+    )
+
+    def _patch(xml: str) -> str:
+        def _add_end(m):
+            p = m.group(0)
+            if "endParaRPr" not in p:
+                # </a:p> is 6 chars — strip it and re-append with endParaRPr inside
+                p = p[:-6] + '<a:endParaRPr lang="en-US" dirty="0"/></a:p>'
+            return p
+        return re.sub(r"<a:p\b[^>]*>.*?</a:p>", _add_end, xml, flags=re.DOTALL)
+
+    tmp = str(path) + ".tmp"
+    shutil.copy(str(path), tmp)
+    try:
+        with zipfile.ZipFile(tmp, "r") as zin:
+            with zipfile.ZipFile(str(path), "w", zipfile.ZIP_DEFLATED) as zout:
+                for item in zin.infolist():
+                    data = zin.read(item.filename)
+                    if _NEEDS_FIX.match(item.filename):
+                        data = _patch(data.decode("utf-8")).encode("utf-8")
+                    zout.writestr(item, data)
+    finally:
+        os.remove(tmp)
+
+
 def main():
     prs = Presentation()
     prs.slide_width  = SLIDE_W
     prs.slide_height = SLIDE_H
 
     print("Building slides...")
-    slide_title(prs);          print("  1/10  Title")
-    slide_agenda(prs);         print("  2/10  Agenda")
-    slide_problem(prs);        print("  3/10  Problem")
-    slide_solution(prs);       print("  4/10  Solution")
-    slide_data(prs);           print("  5/10  Data")
-    slide_features(prs);       print("  6/10  Features")
-    slide_models(prs);         print("  7/10  Models")
+    slide_title(prs);          print("  1/13  Title")
+    slide_agenda(prs);         print("  2/13  Agenda")
+    slide_problem(prs);        print("  3/13  Problem")
+    slide_solution(prs);       print("  4/13  Solution")
+    slide_data(prs);           print("  5/13  Data")
+    slide_features(prs);       print("  6/13  Features")
+    slide_models(prs);         print("  7/13  Models")
     slide_mlflow(prs);         print("  8/13  MLflow Screenshot")
     slide_architecture(prs);   print("  9/13  Architecture")
-    slide_cicd(prs);           print("  9/10  CI/CD")
-    slide_business_value(prs); print(" 10/10  Business Value")
-    slide_recommendations(prs);print(" 11/11  Recommendations")
-    slide_closing(prs);        print(" 12/12  Closing")
+    slide_cicd(prs);           print(" 10/13  CI/CD")
+    slide_business_value(prs); print(" 11/13  Business Value")
+    slide_recommendations(prs);print(" 12/13  Recommendations")
+    slide_closing(prs);        print(" 13/13  Closing")
 
+    # Save to main deliverables folder
     prs.save(OUT)
+
+    # Also save to Livrables subfolder
+    livrables = Path(__file__).parent / "Livrables"
+    livrables.mkdir(exist_ok=True)
+    out_liv = livrables / "Presentation_Agro_Opt_032025.pptx"
+    import shutil as _sh
+    _sh.copy(str(OUT), str(out_liv))
+
+    # Fix repair prompt on both copies
+    print("Fixing paragraph XML (repair prompt)...")
+    fix_pptx_paragraphs(OUT)
+    fix_pptx_paragraphs(out_liv)
+
     print(f"Saved -> {OUT}")
+    print(f"Saved -> {out_liv}")
 
 
 if __name__ == "__main__":

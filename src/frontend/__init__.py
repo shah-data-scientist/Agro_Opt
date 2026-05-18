@@ -1,1 +1,1 @@
-"""Phase 8 — Streamlit frontend for AgroOpt."""
+"""Phase 8 — Streamlit frontend for CropWise."""

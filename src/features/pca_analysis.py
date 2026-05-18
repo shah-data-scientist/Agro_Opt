@@ -1,5 +1,5 @@
 """
-Phase 4 — PCA Analysis for AgroOpt.
+Phase 4 — PCA Analysis for CropWise.
 
 Strategy
 --------

@@ -1,5 +1,5 @@
 # =============================================================================
-# AgroOpt — Continuous Integration
+# CropWise — Continuous Integration
 # =============================================================================
 # Runs on every push to main and on all pull requests targeting main.
 #
@@ -102,7 +102,7 @@ jobs:
           context: .
           file: Dockerfile.api
           push: false
-          tags: agro-opt-api:ci
+          tags: crop-wise-api:ci
 
       - name: Build frontend image (no push)
         uses: docker/build-push-action@v6
@@ -110,4 +110,4 @@ jobs:
           context: .
           file: Dockerfile.frontend
           push: false
-          tags: agro-opt-frontend:ci
+          tags: crop-wise-frontend:ci

@@ -1,13 +1,13 @@
 # =============================================================================
-# AgroOpt — Docker Publish
+# CropWise — Docker Publish
 # =============================================================================
 # Builds and pushes both Docker images to the GitHub Container Registry
 # (ghcr.io) on every push to main and on semver tags (v*.*.*).
 #
 # Images
 # ------
-# ghcr.io/<owner>/agro-opt-api       — FastAPI backend
-# ghcr.io/<owner>/agro-opt-frontend  — Streamlit frontend
+# ghcr.io/<owner>/crop-wise-api       — FastAPI backend
+# ghcr.io/<owner>/crop-wise-frontend  — Streamlit frontend
 #
 # Tags applied
 # ------------
@@ -57,7 +57,7 @@ jobs:
         id: meta-api
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/agro-opt-api
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/crop-wise-api
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -83,7 +83,7 @@ jobs:
         id: meta-frontend
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/agro-opt-frontend
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/crop-wise-frontend
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}

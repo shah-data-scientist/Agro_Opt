@@ -1,5 +1,5 @@
 """
-Shared pytest fixtures for the AgroOpt test suite.
+Shared pytest fixtures for the CropWise test suite.
 
 All fixtures use ``scope="session"`` so the model is trained only once
 per test run. The model asset fixture builds a minimal in-memory Ridge

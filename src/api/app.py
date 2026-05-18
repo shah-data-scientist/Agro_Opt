@@ -1,5 +1,5 @@
 """
-Phase 7 — FastAPI application for AgroOpt.
+Phase 7 — FastAPI application for CropWise.
 
 Endpoints
 ---------
@@ -69,7 +69,7 @@ def _to_farm_conditions(req: FarmConditionsRequest) -> FarmConditions:
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Load all ML assets into app.state at startup; release at shutdown."""
     setup_logging()
-    logger.info("AgroOpt API starting — loading model assets …")
+    logger.info("CropWise API starting — loading model assets …")
     app.state.assets = load_assets()
     model_name = type(app.state.assets["model"].named_steps.get("ridge",
                  app.state.assets["model"])).__name__
@@ -78,7 +78,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.model_name = model_name
     app.state.n_features = n_features
     yield
-    logger.info("AgroOpt API shutting down.")
+    logger.info("CropWise API shutting down.")
 
 
 # ---------------------------------------------------------------------------
@@ -86,7 +86,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 # ---------------------------------------------------------------------------
 
 app = FastAPI(
-    title="AgroOpt API",
+    title="CropWise API",
     description=(
         "Data-driven crop yield prediction and recommendation API. "
         "Powered by a Ridge regression pipeline trained on 666 K synthetic "

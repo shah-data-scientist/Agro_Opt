@@ -1,5 +1,5 @@
 """
-Phase 8 — Streamlit frontend for AgroOpt.
+Phase 8 — Streamlit frontend for CropWise.
 
 Usage
 -----
@@ -28,7 +28,7 @@ import plotly.graph_objects as go
 # ---------------------------------------------------------------------------
 
 st.set_page_config(
-    page_title="AgroOpt — Crop Yield Intelligence",
+    page_title="CropWise — Crop Yield Intelligence",
     page_icon="assets/favicon.png" if False else "🌾",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -131,7 +131,7 @@ def _check_health() -> bool:
 # Sidebar — configuration & farm conditions
 # ---------------------------------------------------------------------------
 
-st.sidebar.title("AgroOpt")
+st.sidebar.title("CropWise")
 st.sidebar.caption("Crop Yield Intelligence")
 
 # API URL
@@ -275,7 +275,7 @@ for preset_name, preset_vals in PRESETS.items():
 # Main area
 # ---------------------------------------------------------------------------
 
-st.title("AgroOpt — Crop Yield Intelligence")
+st.title("CropWise — Crop Yield Intelligence")
 st.caption(
     "Data-driven crop yield prediction for US farms. "
     "Powered by a Ridge regression pipeline (R² = 0.913, 666 K training records)."
@@ -506,7 +506,7 @@ with tab_optimize:
 
 st.divider()
 st.caption(
-    "AgroOpt Phase 8 — Streamlit frontend | "
+    "CropWise Phase 8 — Streamlit frontend | "
     "Backend: FastAPI + Ridge pipeline (sklearn) | "
     "Data: 666 K synthetic USA farm records"
 )

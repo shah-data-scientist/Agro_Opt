@@ -1,5 +1,5 @@
 """
-Phase 3 — Feature Engineering for AgroOpt.
+Phase 3 — Feature Engineering for CropWise.
 
 Strategy
 --------

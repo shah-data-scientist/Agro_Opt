@@ -1,8 +1,8 @@
 # =============================================================================
-# AgroOpt — FastAPI backend
+# CropWise — FastAPI backend
 # =============================================================================
-# Build:  docker build -f Dockerfile.api -t agro-opt-api .
-# Run:    docker run -p 8000:8000 -v $(pwd)/models:/app/models:ro agro-opt-api
+# Build:  docker build -f Dockerfile.api -t crop-wise-api .
+# Run:    docker run -p 8000:8000 -v $(pwd)/models:/app/models:ro crop-wise-api
 # =============================================================================
 
 FROM python:3.11-slim

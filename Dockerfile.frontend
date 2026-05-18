@@ -1,8 +1,8 @@
 # =============================================================================
-# AgroOpt — Streamlit frontend
+# CropWise — Streamlit frontend
 # =============================================================================
-# Build:  docker build -f Dockerfile.frontend -t agro-opt-frontend .
-# Run:    docker run -p 8501:8501 -e API_BASE_URL=http://localhost:8000 agro-opt-frontend
+# Build:  docker build -f Dockerfile.frontend -t crop-wise-frontend .
+# Run:    docker run -p 8501:8501 -e API_BASE_URL=http://localhost:8000 crop-wise-frontend
 # =============================================================================
 
 FROM python:3.11-slim

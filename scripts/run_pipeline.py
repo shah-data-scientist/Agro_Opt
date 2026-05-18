@@ -1,5 +1,5 @@
 """
-AgroOpt — End-to-End MLOps Pipeline
+CropWise — End-to-End MLOps Pipeline
 =====================================
 Deliverable 3: Complete MLOps Pipeline
 
@@ -136,7 +136,7 @@ def stage_4_evaluate() -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="AgroOpt end-to-end MLOps pipeline",
+        description="CropWise end-to-end MLOps pipeline",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -165,7 +165,7 @@ def main() -> int:
     args = parse_args()
 
     t0 = time.perf_counter()
-    logger.info("AgroOpt MLOps Pipeline starting …")
+    logger.info("CropWise MLOps Pipeline starting …")
     logger.info(f"Project root: {settings.paths.models_dir.parent}")
 
     try:

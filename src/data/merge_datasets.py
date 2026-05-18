@@ -1,5 +1,5 @@
 """
-Phase 2 — Data Integration for AgroOpt.
+Phase 2 — Data Integration for CropWise.
 
 Strategy
 --------

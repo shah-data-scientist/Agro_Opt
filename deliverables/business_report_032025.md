@@ -1,6 +1,6 @@
-# AgroOpt — Business Summary Report
+# CropWise — Business Summary Report
 
-**Project:** AgroOpt — Agricultural Yield Prediction & Optimization Platform
+**Project:** CropWise — Agricultural Yield Prediction & Optimization Platform
 **Author:** Shah Shahul
 **Date:** March 2025
 **Programme:** OpenClassrooms — Machine Learning Engineer (Bac+5)
@@ -24,7 +24,7 @@
 
 ## 1. Executive Summary
 
-AgroOpt is an end-to-end MLOps platform that predicts crop yields, recommends optimal crops for given farm conditions, and suggests management improvements to maximise agricultural output. The platform is trained on 666,494 labelled farm records covering four major US crops (Maize, Rice, Soybean, Wheat) anchored to FAO 2013 reference statistics.
+CropWise is an end-to-end MLOps platform that predicts crop yields, recommends optimal crops for given farm conditions, and suggests management improvements to maximise agricultural output. The platform is trained on 666,494 labelled farm records covering four major US crops (Maize, Rice, Soybean, Wheat) anchored to FAO 2013 reference statistics.
 
 The best model — a regularised Ridge regression pipeline — achieves **R² = 0.913** and **RMSE = 4,989 hg/ha** (~0.5 t/ha) on a held-out test set of 133,299 samples. The entire platform is containerised with Docker, continuously tested via GitHub Actions, and served through a FastAPI REST API with a Streamlit frontend.
 
@@ -70,7 +70,7 @@ Build a production-grade ML system that:
 
 ## 3. Solution Overview
 
-AgroOpt is structured as a four-layer platform:
+CropWise is structured as a four-layer platform:
 
 ```
 Raw Data (CSV)
@@ -280,7 +280,7 @@ Tests run entirely in-memory (no pkl files required): a minimal Ridge pipeline i
 Triggered on push to `main` or version tags (`v*.*.*`):
 
 - Authenticates to `ghcr.io` via `GITHUB_TOKEN`
-- Builds and pushes `agro-opt-api` and `agro-opt-frontend` with BuildKit layer caching (`type=gha`)
+- Builds and pushes `crop-wise-api` and `crop-wise-frontend` with BuildKit layer caching (`type=gha`)
 
 ---
 
@@ -348,7 +348,7 @@ It returns the configuration that maximises predicted yield alongside the estima
 ## Appendix — Project Structure
 
 ```
-Agro_Opt/
+CropWise/
 ├── src/
 │   ├── data/               # Data loading, preprocessing, merging
 │   ├── features/           # Feature engineering (36 features)
@@ -379,4 +379,4 @@ Agro_Opt/
 
 ---
 
-*Generated as part of the AgroOpt MLOps project — OpenClassrooms Machine Learning Engineer programme.*
+*Generated as part of the CropWise MLOps project — OpenClassrooms Machine Learning Engineer programme.*

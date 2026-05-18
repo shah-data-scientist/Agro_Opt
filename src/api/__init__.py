@@ -1,1 +1,1 @@
-"""Phase 7 — FastAPI backend for AgroOpt."""
+"""Phase 7 — FastAPI backend for CropWise."""

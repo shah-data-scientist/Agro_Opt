@@ -1,5 +1,5 @@
 """
-Data loading utilities for AgroOpt.
+Data loading utilities for CropWise.
 
 Provides typed loaders for every raw dataset and a convenience
 function that loads all datasets at once.

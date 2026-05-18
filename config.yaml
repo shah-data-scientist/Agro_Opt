@@ -1,9 +1,9 @@
 # =============================================================================
-# AgroOpt — Central Configuration
+# CropWise — Central Configuration
 # =============================================================================
 
 project:
-  name: "agro-opt"
+  name: "crop-wise"
   version: "0.1.0"
   random_seed: 42
 
@@ -31,7 +31,7 @@ paths:
     label_encoder: "models/label_encoder.pkl"
   mlflow:
     tracking_uri: "mlflow/mlruns"
-    experiment_name: "agro-opt-yield-prediction"
+    experiment_name: "crop-wise-yield-prediction"
 
 # -----------------------------------------------------------------------------
 # Data
@@ -109,5 +109,5 @@ api:
 # -----------------------------------------------------------------------------
 streamlit:
   api_base_url: "http://localhost:8000"
-  page_title: "AgroOpt — Crop Yield & Recommendation"
+  page_title: "CropWise — Crop Yield & Recommendation"
   page_icon: "🌾"

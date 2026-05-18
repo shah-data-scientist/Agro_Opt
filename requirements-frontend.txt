@@ -1,4 +1,4 @@
-# AgroOpt Frontend — runtime dependencies only
+# CropWise Frontend — runtime dependencies only
 # Install: pip install -r requirements-frontend.txt
 
 # UI framework

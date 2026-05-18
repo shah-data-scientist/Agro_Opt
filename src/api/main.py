@@ -1,5 +1,5 @@
 """
-Uvicorn entrypoint for the AgroOpt FastAPI application.
+Uvicorn entrypoint for the CropWise FastAPI application.
 
 Usage
 -----
@@ -20,7 +20,7 @@ import uvicorn
 
 
 def main() -> None:
-    """Start the AgroOpt API server."""
+    """Start the CropWise API server."""
     uvicorn.run(
         "src.api.app:app",
         host="0.0.0.0",

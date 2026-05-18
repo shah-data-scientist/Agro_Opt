@@ -1,4 +1,4 @@
-# AgroOpt — Agricultural Crop Yield Prediction & Recommendation System
+# CropWise — Agricultural Crop Yield Prediction & Recommendation System
 
 > A production-grade machine learning system that predicts crop yields and recommends
 > the best crop for given environmental conditions.
@@ -38,7 +38,7 @@
 ```bash
 # Clone
 git clone <repo-url>
-cd agro-opt
+cd crop-wise
 
 # Install all dependencies
 poetry install
@@ -83,7 +83,7 @@ poetry run mlflow ui --backend-store-uri mlflow/mlruns
 ## Repository Structure
 
 ```
-agro-opt/
+crop-wise/
 ├── config.yaml                   # Central configuration (all pipeline settings)
 ├── pyproject.toml                # Poetry dependencies
 ├── docker-compose.yml            # Local dev/demo orchestration

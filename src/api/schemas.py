@@ -1,5 +1,5 @@
 """
-Pydantic request / response schemas for the AgroOpt API.
+Pydantic request / response schemas for the CropWise API.
 
 All schemas use strict field validation and clear docstrings so
 that the auto-generated OpenAPI docs are self-explanatory.

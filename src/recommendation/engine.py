@@ -1,5 +1,5 @@
 """
-Phase 6 — Recommendation Engine for AgroOpt.
+Phase 6 — Recommendation Engine for CropWise.
 
 Given a farm's local conditions (climate, soil, management practices),
 this module:

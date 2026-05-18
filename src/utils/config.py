@@ -1,5 +1,5 @@
 """
-Configuration management for AgroOpt.
+Configuration management for CropWise.
 
 Loads config.yaml and exposes a typed Settings object.
 Environment variables override YAML values where applicable.
@@ -59,7 +59,7 @@ class PathsConfig(BaseSettings):
     label_encoder: Path = PROJECT_ROOT / "models" / "label_encoder.pkl"
 
     mlflow_tracking_uri: str = str(PROJECT_ROOT / "mlflow" / "mlruns")
-    mlflow_experiment_name: str = "agro-opt-yield-prediction"
+    mlflow_experiment_name: str = "crop-wise-yield-prediction"
 
     model_config = {"arbitrary_types_allowed": True}
 
@@ -111,7 +111,7 @@ class APIConfig(BaseSettings):
 
 class StreamlitConfig(BaseSettings):
     api_base_url: str = "http://localhost:8000"
-    page_title: str = "AgroOpt — Crop Yield & Recommendation"
+    page_title: str = "CropWise — Crop Yield & Recommendation"
     page_icon: str = "🌾"
 
     model_config = {"arbitrary_types_allowed": True}
@@ -130,7 +130,7 @@ class Settings:
 
     def __init__(self) -> None:
         raw = _load_yaml(CONFIG_PATH)
-        self.project_name: str = raw.get("project", {}).get("name", "agro-opt")
+        self.project_name: str = raw.get("project", {}).get("name", "crop-wise")
         self.random_seed: int = raw.get("project", {}).get("random_seed", 42)
 
         self.paths = PathsConfig()
