@@ -1,5 +1,5 @@
 """
-Phase 5 — Model Training for AgroOpt.
+Phase 5 — Model Training for CropWise.
 
 Strategy
 --------

@@ -1,5 +1,5 @@
 """
-Evaluation utilities for AgroOpt model assessment.
+Evaluation utilities for CropWise model assessment.
 
 All functions accept numpy arrays and return either metrics dicts or
 matplotlib Axes objects, so they work both standalone and inside
